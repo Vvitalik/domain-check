@@ -1,0 +1,46 @@
+services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: domain_check_nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - domain_check_network
+
+  php:
+    build:
+      context: .
+      dockerfile: dockerfiles/php.Dockerfile
+    container_name: domain_check_php
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - domain_check_network
+
+  mysql:
+    image: mysql:8.0
+    container_name: domain_check_db
+    restart: unless-stopped
+    ports:
+      - "3400:3306"
+    environment:
+      MYSQL_DATABASE: domain_check_db
+      MYSQL_USER: domain_check_user
+      MYSQL_PASSWORD: domain_check_password
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - domain_check_db_data:/var/lib/mysql
+    networks:
+      - domain_check_network
+
+networks:
+  domain_check_network:
+
+volumes:
+  domain_check_db_data:
