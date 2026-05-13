@@ -20,6 +20,8 @@ services:
     working_dir: /var/www/html
     volumes:
       - ./:/var/www/html
+    depends_on:
+      - mysql
     networks:
       - domain_check_network
 
@@ -30,12 +32,16 @@ services:
     ports:
       - "3400:3306"
     environment:
-      MYSQL_DATABASE: domain_check_db
-      MYSQL_USER: domain_check_user
-      MYSQL_PASSWORD: domain_check_password
-      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - domain_check_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     networks:
       - domain_check_network
 
