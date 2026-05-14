@@ -78,6 +78,10 @@ cd domain-check
 ```bash
 cp .env.example .env
 ```
+The project includes a pre-configured `.env.example` file.
+
+For Docker setup, the default values in `.env.example` are already configured
+to work with the Docker Compose services — no changes needed.
 
 **3. Start containers**
 
