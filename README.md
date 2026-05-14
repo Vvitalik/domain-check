@@ -182,6 +182,8 @@ domain-check/
 
 ## Demo
 
+https://domain-check-production.up.railway.app/login
+
 To get started:
 
 1. Open the demo link
@@ -189,3 +191,11 @@ To get started:
 3. After login, click **Add Domain**
 4. Enter domain URL and configure check settings
 5. Save — monitoring starts automatically
+
+Or use the test account to explore existing data:
+
+| Field    | Value           |
+|----------|-----------------|
+| Email    | `test@mail.com` |
+| Password | `12345678`      |
+
