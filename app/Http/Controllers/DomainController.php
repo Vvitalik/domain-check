@@ -20,7 +20,7 @@ class DomainController extends Controller
 
     public function index(): View
     {
-        $all_domains = Auth::user()->domains()->with('latestCheck')->latest()->paginate(10);
+        $all_domains = Auth::user()->domains()->with('latestCheck')->latest()->paginate(1);
 
         if (request()->ajax()) {
             return view('domains.partials.async-table', compact('all_domains'));

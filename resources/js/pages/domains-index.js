@@ -1,7 +1,13 @@
-import {showToast} from '../toast';
+import { showToast } from '../toast';
+
+function secureUrl(url) {
+    const parsedUrl = new URL(url, window.location.origin);
+    parsedUrl.protocol = window.location.protocol;
+
+    return parsedUrl.toString();
+}
 
 document.addEventListener('DOMContentLoaded', () => {
-
     document.querySelectorAll('.js-delete-domain').forEach((button) => {
         button.addEventListener('click', async () => {
             if (!confirm('Delete this domain?')) {
@@ -15,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
             button.classList.add('opacity-60', 'cursor-not-allowed');
 
             try {
-                const response = await fetch(button.dataset.deleteUrl, {
+                const response = await fetch(secureUrl(button.dataset.deleteUrl), {
                     method: 'DELETE',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -51,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
             button.classList.add('opacity-60', 'cursor-not-allowed');
 
             try {
-                const response = await fetch(button.dataset.checkUrl, {
+                const response = await fetch(secureUrl(button.dataset.checkUrl), {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -98,13 +104,14 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('click', async (event) => {
-
     const domainsLink = event.target.closest('.js-domains-pagination a');
 
     if (domainsLink) {
         event.preventDefault();
 
-        const response = await fetch(domainsLink.href, {
+        const url = secureUrl(domainsLink.href);
+
+        const response = await fetch(url, {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
             },
@@ -114,7 +121,7 @@ document.addEventListener('click', async (event) => {
 
         document.getElementById('domains-table').innerHTML = html;
 
-        window.history.pushState({}, '', domainsLink.href);
+        window.history.pushState({}, '', url);
 
         return;
     }
@@ -124,7 +131,9 @@ document.addEventListener('click', async (event) => {
     if (checksLink) {
         event.preventDefault();
 
-        const response = await fetch(checksLink.href, {
+        const url = secureUrl(checksLink.href);
+
+        const response = await fetch(url, {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
             },
@@ -134,6 +143,6 @@ document.addEventListener('click', async (event) => {
 
         document.getElementById('domain-checks-table').innerHTML = html;
 
-        window.history.pushState({}, '', checksLink.href);
+        window.history.pushState({}, '', url);
     }
 });
